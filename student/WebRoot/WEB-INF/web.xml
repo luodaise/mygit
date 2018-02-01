@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" 
+	xmlns="http://java.sun.com/xml/ns/javaee" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+	http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" metadata-complete="true">
+   	
+   	<!-- OpenSessionInView -->
+    <filter>
+	   <filter-name>openSession</filter-name>
+	   <filter-class>org.springframework.orm.hibernate4.support.OpenSessionInViewFilter</filter-class>
+	   <init-param>
+		   <param-name>singleSession</param-name>
+	   	   <param-value>true</param-value>
+   	   </init-param>
+   	   <init-param>
+   	   	   <param-name>sessionFactoryBeanName</param-name>
+   	   	   <param-value>sessionFactory</param-value>
+   	   </init-param>
+    </filter>
+    <filter-mapping>
+	   <filter-name>openSession</filter-name>
+	   <url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<!-- 配置字符集 -->
+	<filter>
+		<filter-name>encodingFilter</filter-name>
+		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+		<init-param>
+			<param-name>forceEncoding</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>encodingFilter</filter-name>
+		<url-pattern>/</url-pattern>
+	</filter-mapping>
+   	<!-- SpringSecurity必须的filter 优先配置，让SpringSecurity先加载，防止SpringSecurity拦截失效 
+  	<filter>
+	    <filter-name>springSecurityFilterChain</filter-name>
+	    <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+	</filter>
+	<filter-mapping>
+	    <filter-name>springSecurityFilterChain</filter-name>
+	    <url-pattern>/*</url-pattern>
+	</filter-mapping>-->
+	
+	<!-- session监听 -->
+<!-- 	<listener>
+     	<listener-class>com.xtlh.util.operatelog.SessionListener</listener-class>
+    </listener> -->
+	
+	<!-- 加载log4j的配置文件 -->  
+	<context-param>  
+	  <param-name>log4jConfigLocation</param-name>  
+	  <param-value>classpath:log4j.properties</param-value>  
+	</context-param> 
+	
+	<!--Spring默认刷新Log4j配置文件的间隔,单位为millisecond-->  
+	<context-param>  
+	  	<param-name>log4jRefreshInterval</param-name>  
+	  	<param-value>60000</param-value>  
+	</context-param>
+	<!--Spring用于log4j初始化的监听器-->  
+ 	<listener>  
+  		<listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>  
+ 	</listener> 
+	
+	<!-- 加载spring和spring-security配置文件 -->
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>classpath:applicationContext.xml
+			</param-value>
+	</context-param>
+<!-- <param-value>classpath:applicationContext.xml
+			classpath:spring-security.xml</param-value> -->
+	<!-- 配置Spring监听 -->
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+
+
+	<!-- 配置SpringMVC 指出具体springmvc的配置文件路径 其中的load-on-startup参数所指代的正数的值越小，该servlet的优先级越高，应用启动时就越先加载-->
+	<!-- “/” 是用来定义默认servlet映射的。也可以如“*.html”表示拦截所有以html为扩展名的请求 -->
+	<servlet>
+		<servlet-name>springMVC</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<description>加载目录下的所有XML作为Spring MVC的配置文件</description>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>classpath:spring-mvc.xml</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>springMVC</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+	
+	<session-config>
+		<session-timeout>1440</session-timeout>
+	</session-config>
+	<!-- 启动欢迎页面的设置 -->
+	<welcome-file-list>
+		<welcome-file>login.jsp</welcome-file>
+	</welcome-file-list>
+	
+    <context-param>
+      <param-name>webAppRootKey</param-name>
+      <param-value>demo.root</param-value>
+    </context-param>
+    
+    <error-page>
+    <error-code>404</error-code>  
+	    <location>/404.jsp</location>  
+	</error-page>  
+	  
+	<error-page>  
+	    <error-code>500</error-code>  
+	    <location>/500.jsp</location>  
+	</error-page>
+	
+</web-app>

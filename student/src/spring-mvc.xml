@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:task="http://www.springframework.org/schema/task" 
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:dwr="http://www.directwebremoting.org/schema/spring-dwr"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc 
+		http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd
+		http://www.springframework.org/schema/task
+		http://www.springframework.org/schema/task/spring-task-3.2.xsd
+		http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context-3.1.xsd
+		http://www.directwebremoting.org/schema/spring-dwr
+		http://www.directwebremoting.org/schema/spring-dwr-3.0.xsd
+		">
+	
+	<!-- 注解扫描包 -->
+	<!--此处只应该加载表现层组件，如果此处还加载dao层或service层的bean会将之前容器加载的替换掉 ,而且此处不会进行AOP织入，所以会造成AOP失效问题（如事务不起作用） -->
+	<context:component-scan base-package="com.app.controller">
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller" /> 
+	</context:component-scan>
+
+	<!-- @ResponseBody注解把返回值直接写到HTTP response body里，spring注解的默认编码是iso-8859-1,防止中文乱码，调整所有编码都为utf-8 -->
+	<mvc:annotation-driven>  
+	    <mvc:message-converters>  
+	        <bean class="org.springframework.http.converter.StringHttpMessageConverter">  
+	            <property name="supportedMediaTypes">  
+	                <list>  
+	                    <value>text/plain;charset=UTF-8</value>  
+	                    <value>text/html;charset=UTF-8</value>  
+	                </list>  
+	            </property>  
+	        </bean>  
+	    </mvc:message-converters>   
+	</mvc:annotation-driven>  
+	
+	<!--静态资源访问  -->
+	<!-- 静态资源映射，要把所有静态资源都存放在resources目录下-->
+	<mvc:resources location="/css/" mapping="css/**"/>
+	<mvc:resources location="/images/" mapping="images/**"/>
+  	<mvc:resources location="/js/" mapping="js/**"/>
+  	<mvc:resources location="/upload/" mapping="upload/**"/>
+  	<mvc:resources location="/pda/" mapping="pda/**"/>
+  	<mvc:resources location="/system/" mapping="system/**"/>
+  	<mvc:resources location="/file/" mapping="file/**"/>
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver" >
+		<property name="viewClass"  value="org.springframework.web.servlet.view.JstlView"/>
+		<property name="prefix" value="/"/>
+		<property name="suffix" value=".jsp"/>
+	</bean>
+	
+</beans>
